@@ -36,14 +36,14 @@ conn.commit()
 # -------------------- FUNCTIONS --------------------
 def register(username, password):
     if not username or not password:
-        return False, "Enter all fields"
+        return False, "সব তথ্য দিন"
 
     try:
         c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
         conn.commit()
-        return True, "Registered successfully"
+        return True, "রেজিস্ট্রেশন সফল হয়েছে ✅"
     except:
-        return False, "User already exists"
+        return False, "এই ইউজার আগে থেকেই আছে"
 
 
 def login(username, password):
@@ -82,6 +82,9 @@ if "user" not in st.session_state:
 # -------------------- UI --------------------
 st.title("🗳️ নির্বাচনের সম্ভাব্য ফলাফল অনলাইনে যাচাই করুন")
 
+# 🔐 Privacy Message
+st.info("🔒 আপনার তথ্য গোপন থাকবে")
+
 # -------------------- AUTH --------------------
 if not st.session_state.user:
 
@@ -90,7 +93,7 @@ if not st.session_state.user:
 
     # -------- Register --------
     if choice == "Register":
-        st.subheader("Register")
+        st.subheader("রেজিস্টার করুন")
 
         u = st.text_input("Username")
         p = st.text_input("Password", type="password")
@@ -104,7 +107,7 @@ if not st.session_state.user:
 
     # -------- Login --------
     elif choice == "Login":
-        st.subheader("Login")
+        st.subheader("লগইন করুন")
 
         u = st.text_input("Username")
         p = st.text_input("Password", type="password")
@@ -114,35 +117,47 @@ if not st.session_state.user:
 
             if user:
                 st.session_state.user = u
-                st.success("Logged in ✅")
+                st.success("লগইন সফল ✅")
                 st.rerun()
             else:
-                st.error("Invalid login ❌")
+                st.error("ভুল ইউজারনেম বা পাসওয়ার্ড ❌")
 
 
 # -------------------- MAIN APP --------------------
 else:
-    st.success(f"Welcome {st.session_state.user}")
+    st.success(f"স্বাগতম {st.session_state.user} 🎉")
 
     # -------- Voting --------
-    option = st.radio("Vote করুন:", ["Lal", "Gerua", "Sabuj"])
+    option = st.radio("আপনার ভোট দিন:", ["লাল", "গেরুয়া", "সবুজ"])
 
     if st.button("Vote"):
         if vote(st.session_state.user, option):
-            st.success("Vote submitted ✅")
+            st.success("ভোট সফলভাবে জমা হয়েছে ✅")
         else:
-            st.warning("You already voted ❗")
+            st.warning("আপনি ইতিমধ্যেই ভোট দিয়েছেন ❗")
 
     # -------- Results --------
-    st.subheader("Results")
+    st.subheader("📊 ফলাফল")
     res = results()
 
-    for k in ["Lal", "Gerua", "Sabuj"]:
+    for k in ["লাল", "গেরুয়া", "সবুজ"]:
         st.write(f"{k}: {res.get(k, 0)}")
 
-    st.subheader(f"মোট ভোট: {total_votes()}")
+    st.subheader(f"🧮 মোট ভোট: {total_votes()}")
 
     # -------- Logout --------
     if st.button("Logout"):
         st.session_state.user = None
         st.rerun()
+
+    # -------- Footer / Donation --------
+    st.markdown("---")
+
+    st.markdown("### 🎉 এটি একটি fun app")
+    st.write("কোনো রকম ব্যক্তিগত তথ্য নেওয়া উদ্দেশ্য নয়।")
+
+    st.markdown("### ❤️ Support করুন")
+    st.write("এই অ্যাপটি কে develop করতে donate করুন এই QR CODE এ:")
+
+    # 👉 QR IMAGE (make sure file exists in same folder)
+    st.image("qr.png", width=250)
