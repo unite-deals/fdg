@@ -125,7 +125,7 @@ else:
     st.success(f"Welcome {st.session_state.user}")
 
     # -------- Voting --------
-    option = st.radio("Vote করুন:", ["Party A", "Party B", "Party C"])
+    option = st.radio("Vote করুন:", ["Lal", "Gerua", "Sabuj"])
 
     if st.button("Vote"):
         if vote(st.session_state.user, option):
@@ -137,7 +137,7 @@ else:
     st.subheader("Results")
     res = results()
 
-    for k in ["Party A", "Party B", "Party C"]:
+    for k in ["Lal", "Gerua", "Sabuj"]:
         st.write(f"{k}: {res.get(k, 0)}")
 
     st.subheader(f"মোট ভোট: {total_votes()}")
